@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, jsonify
 from groq import Groq
 
 app = Flask(__name__)
-client = Groq(api_key="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")
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 HISTORY_FILE = "chat_history.json"
 
