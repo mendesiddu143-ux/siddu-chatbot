@@ -1,3 +1,6 @@
 flask
 groq
 gunicorn
+pymupdf
+python-docx
+pillow
