@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,7 +85,15 @@
         .send-btn { width: 40px; height: 40px; border-radius: 11px; border: none; background: linear-gradient(135deg, var(--accent), #9b6aff); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s; box-shadow: 0 4px 14px rgba(124,106,255,0.35); }
         .send-btn:hover { transform: scale(1.05); } .send-btn:active { transform: scale(0.96); } .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
         .send-btn svg { width: 18px; height: 18px; }
+        .upload-btn { width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        .upload-btn:hover { border-color: var(--accent3); color: var(--accent3); }
         .input-hint { text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 8px; opacity: 0.6; }
+        .file-preview { display: none; align-items: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
+        .file-preview.show { display: flex; }
+        .file-preview-icon { font-size: 20px; }
+        .file-preview-name { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-preview-remove { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; padding: 0 4px; }
+        .file-preview-remove:hover { color: #ff4444; }
         .design-page { flex: 1; display: none; flex-direction: column; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); border-top: none; border-radius: 0 0 16px 16px; }
         .design-page.active { display: flex; }
         .design-top { display: flex; flex: 1; overflow: hidden; }
@@ -159,7 +168,7 @@
         .history-btn { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 7px 14px; color: var(--text-dim); font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
         .history-btn:hover { border-color: var(--accent); color: var(--text); }
         .history-count { background: var(--accent); color: white; border-radius: 999px; padding: 1px 7px; font-size: 11px; }
-        .history-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 280px; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; z-index: 50; box-shadow: 0 10px 40px rgba(0,0,0,0.4); overflow: hidden; }
+        .history-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 280px; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; z-index: 999; box-shadow: 0 10px 40px rgba(0,0,0,0.4); overflow: hidden; }
         .history-menu.show { display: block; animation: fadeUp 0.2s ease; }
         .history-menu-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text); }
         .new-chat-btn { background: var(--accent); border: none; border-radius: 8px; padding: 5px 12px; color: white; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
@@ -174,9 +183,20 @@
         .history-action-btn:hover { border-color: var(--accent2); color: var(--accent2); }
         .history-action-btn.del:hover { border-color: #ff4444; color: #ff4444; }
         .history-empty { padding: 20px; text-align: center; color: var(--text-dim); font-size: 13px; }
-        .current-chat-bar { display: none; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(124,106,255,0.08); border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
-        .current-chat-bar.show { display: flex; }
-        .current-chat-title { color: var(--accent); font-weight: 500; }
+        .mode-dropdown { position: relative; }
+        .mode-btn { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 7px 14px; color: var(--text-dim); font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+        .mode-btn:hover { border-color: var(--accent); color: var(--text); }
+        .mode-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; width: 240px; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; z-index: 999; box-shadow: 0 10px 40px rgba(0,0,0,0.4); overflow: hidden; }
+        .mode-menu.show { display: block; animation: fadeUp 0.2s ease; }
+        .mode-menu-title { padding: 12px 16px; font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+        .mode-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background 0.2s; }
+        .mode-item:hover { background: rgba(124,106,255,0.08); }
+        .mode-item.active { background: rgba(124,106,255,0.12); }
+        .mode-item-icon { font-size: 20px; }
+        .mode-item-info { flex: 1; }
+        .mode-item-name { font-size: 13px; color: var(--text); font-weight: 500; }
+        .mode-item-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+        .mode-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(124,106,255,0.15); border: 1px solid rgba(124,106,255,0.3); border-radius: 999px; padding: 2px 10px; font-size: 11px; color: var(--accent); margin-bottom: 8px; }
         @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
         @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
@@ -230,22 +250,82 @@
                 Speaking...
                 <button class="stop-speak-btn" onclick="stopSpeaking()">⏹ Stop</button>
             </div>
+
+            <!-- MODE DROPDOWN -->
+            <div class="mode-dropdown" id="modeDropdown">
+                <button class="mode-btn" id="modeBtnTrigger">
+                    <span id="modeIcon">🤖</span>
+                    <span id="modeName">Default</span>
+                    <span style="font-size:10px;opacity:0.6">▼</span>
+                </button>
+                <div class="mode-menu" id="modeMenu">
+                    <div class="mode-menu-title">AI Personality Mode</div>
+                    <div class="mode-item active" data-mode="default" data-icon="🤖" data-name="Default">
+                        <span class="mode-item-icon">🤖</span>
+                        <div class="mode-item-info">
+                            <div class="mode-item-name">Default</div>
+                            <div class="mode-item-desc">Friendly general assistant</div>
+                        </div>
+                    </div>
+                    <div class="mode-item" data-mode="developer" data-icon="👨‍💻" data-name="Developer">
+                        <span class="mode-item-icon">👨‍💻</span>
+                        <div class="mode-item-info">
+                            <div class="mode-item-name">Developer Mode</div>
+                            <div class="mode-item-desc">Technical & code focused</div>
+                        </div>
+                    </div>
+                    <div class="mode-item" data-mode="creative" data-icon="🎨" data-name="Creative">
+                        <span class="mode-item-icon">🎨</span>
+                        <div class="mode-item-info">
+                            <div class="mode-item-name">Creative Mode</div>
+                            <div class="mode-item-desc">Imaginative & artistic</div>
+                        </div>
+                    </div>
+                    <div class="mode-item" data-mode="study" data-icon="📚" data-name="Study">
+                        <span class="mode-item-icon">📚</span>
+                        <div class="mode-item-info">
+                            <div class="mode-item-name">Study Assistant</div>
+                            <div class="mode-item-desc">Patient teacher & explainer</div>
+                        </div>
+                    </div>
+                    <div class="mode-item" data-mode="business" data-icon="💼" data-name="Business">
+                        <span class="mode-item-icon">💼</span>
+                        <div class="mode-item-info">
+                            <div class="mode-item-name">Business Advisor</div>
+                            <div class="mode-item-desc">Strategic & professional</div>
+                        </div>
+                    </div>
+                    <div class="mode-item" data-mode="motivator" data-icon="🔥" data-name="Motivator">
+                        <span class="mode-item-icon">🔥</span>
+                        <div class="mode-item-info">
+                            <div class="mode-item-name">Motivator Mode</div>
+                            <div class="mode-item-desc">Energetic life coach</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORY DROPDOWN -->
             <div class="history-dropdown" id="historyDropdown">
-    <button class="history-btn" onclick="toggleHistory()">
-        🕐 History
-        <span id="historyCount" class="history-count">0</span>
-    </button>
-    <div class="history-menu" id="historyMenu">
-        <div class="history-menu-header">
-            <span>Recent Chats</span>
-            <button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
-        </div>
-        <div class="history-list" id="historyList">
-            <div class="history-empty">No chats yet!</div>
-        </div>
-    </div>
-</div>
-<div class="status-pill"><span class="status-dot"></span>Online</div>
+                <button class="history-btn" id="historyBtnTrigger">
+                    🕐 History
+                    <span id="historyCount" class="history-count">0</span>
+                </button>
+                <div class="history-menu" id="historyMenu">
+                    <div class="history-menu-header">
+                        <span>Recent Chats</span>
+                        <button class="new-chat-btn" id="newChatBtn">+ New Chat</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="history-empty">No chats yet!</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="status-pill"><span class="status-dot"></span>Online</div>
+                <a href="/logout" style="padding:6px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);font-size:12px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6ab0';this.style.color='#ff6ab0'" onmouseout="this.style.borderColor='rgba(255,255,255,0.07)';this.style.color='#8880aa'">Logout</a>
+            </div>
         </div>
     </header>
 
@@ -277,9 +357,22 @@
             </div>
         </div>
         <div class="chat-input-area">
+            <div class="file-preview" id="filePreview">
+                <span class="file-preview-icon" id="fileIcon">📄</span>
+                <span class="file-preview-name" id="fileName">file.pdf</span>
+                <button class="file-preview-remove" onclick="removeFile()">✕</button>
+            </div>
             <div class="input-wrapper" id="inputWrapper">
-                <textarea id="messageInput" placeholder="Message ManDot AI or click 🎤 to speak in any language..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                <textarea id="messageInput" placeholder="Message ManDot AI or click 🎤 to speak..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
                 <div class="btn-group">
+                    <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.docx,.doc,.txt" style="display:none" onchange="handleFileSelect(event)">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()" title="Upload file">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </button>
                     <button class="mic-btn" id="micBtn" onclick="toggleVoice()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
@@ -365,247 +458,363 @@
 
 <script>
 // ── Stars ──
-const canvas=document.getElementById('starsCanvas');
-const ctx=canvas.getContext('2d');
-let stars=[];
-function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-function createStars(count){
-    stars=[];
-    for(let i=0;i<count;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.4+0.2,alpha:Math.random()*0.7+0.15,twinkleSpeed:Math.random()*0.008+0.002,twinkleDir:Math.random()>0.5?1:-1,sparkle:Math.random()>0.93});}
+const canvas = document.getElementById('starsCanvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+function createStars(count) {
+    stars = [];
+    for (let i = 0; i < count; i++) {
+        stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.4 + 0.2, alpha: Math.random() * 0.7 + 0.15, twinkleSpeed: Math.random() * 0.008 + 0.002, twinkleDir: Math.random() > 0.5 ? 1 : -1, sparkle: Math.random() > 0.93 });
+    }
 }
-function drawStars(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(const s of stars){
-        s.alpha+=s.twinkleSpeed*s.twinkleDir;
-        if(s.alpha>=0.85||s.alpha<=0.1)s.twinkleDir*=-1;
-        ctx.save();ctx.globalAlpha=s.alpha;
-        if(s.sparkle){ctx.translate(s.x,s.y);const len=s.r*3.5;ctx.beginPath();for(let a=0;a<Math.PI*2;a+=Math.PI/2){const midA=a+Math.PI/4;if(a===0)ctx.moveTo(Math.cos(a)*len,Math.sin(a)*len);else ctx.lineTo(Math.cos(a)*len,Math.sin(a)*len);ctx.lineTo(Math.cos(midA)*len*0.25,Math.sin(midA)*len*0.25);}ctx.closePath();ctx.fillStyle='#ffffff';ctx.shadowColor='#a090ff';ctx.shadowBlur=8;ctx.fill();}
-        else{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`hsl(${220+Math.random()*60},60%,90%)`;ctx.shadowBlur=s.r>1?4:0;ctx.fill();}
+function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+        s.alpha += s.twinkleSpeed * s.twinkleDir;
+        if (s.alpha >= 0.85 || s.alpha <= 0.1) s.twinkleDir *= -1;
+        ctx.save(); ctx.globalAlpha = s.alpha;
+        if (s.sparkle) {
+            ctx.translate(s.x, s.y); const len = s.r * 3.5;
+            ctx.beginPath();
+            for (let a = 0; a < Math.PI * 2; a += Math.PI / 2) {
+                const midA = a + Math.PI / 4;
+                if (a === 0) ctx.moveTo(Math.cos(a) * len, Math.sin(a) * len);
+                else ctx.lineTo(Math.cos(a) * len, Math.sin(a) * len);
+                ctx.lineTo(Math.cos(midA) * len * 0.25, Math.sin(midA) * len * 0.25);
+            }
+            ctx.closePath(); ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#a090ff'; ctx.shadowBlur = 8; ctx.fill();
+        } else {
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${220 + Math.random() * 60},60%,90%)`; ctx.shadowBlur = s.r > 1 ? 4 : 0; ctx.fill();
+        }
         ctx.restore();
     }
     requestAnimationFrame(drawStars);
 }
-resizeCanvas();createStars(220);drawStars();
-window.addEventListener('resize',()=>{resizeCanvas();createStars(220);});
+resizeCanvas(); createStars(220); drawStars();
+window.addEventListener('resize', () => { resizeCanvas(); createStars(220); });
 
 // ── Tabs ──
-function switchTab(tab){
-    document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='chat')||(i===1&&tab==='design')));
-    document.getElementById('chatPage').classList.toggle('active',tab==='chat');
-    document.getElementById('designPage').classList.toggle('active',tab==='design');
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (i === 0 && tab === 'chat') || (i === 1 && tab === 'design')));
+    document.getElementById('chatPage').classList.toggle('active', tab === 'chat');
+    document.getElementById('designPage').classList.toggle('active', tab === 'design');
 }
 
 // ── Design ──
-let selectedType='html';
-function selectType(btn,type){
-    document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');selectedType=type;
-    const placeholders={
-        html:'A modern dark card component with hover effects...',
-        js:'An animated counter that counts up on scroll...',
-        react:'A reusable button component with variants...',
-        landing:'A SaaS landing page with hero, features, pricing...',
-        palette:'A luxury fashion brand color palette...',
-        ui:'Tips for a mobile-first checkout page...',
-        animation:'A futuristic loading screen with glowing particles and spinning rings...'
+let selectedType = 'html';
+function selectType(btn, type) {
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); selectedType = type;
+    const placeholders = {
+        html: 'A modern dark card component with hover effects...',
+        js: 'An animated counter that counts up on scroll...',
+        react: 'A reusable button component with variants...',
+        landing: 'A SaaS landing page with hero, features, pricing...',
+        palette: 'A luxury fashion brand color palette...',
+        ui: 'Tips for a mobile-first checkout page...',
+        animation: 'A futuristic loading screen with glowing particles...'
     };
-    document.getElementById('designPrompt').placeholder=placeholders[type]||'';
+    document.getElementById('designPrompt').placeholder = placeholders[type] || '';
 }
 
-function switchResultTab(el,panelId){
-    document.querySelectorAll('.result-tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.result-panel').forEach(p=>p.classList.remove('active'));
+function switchResultTab(el, panelId) {
+    document.querySelectorAll('.result-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.result-panel').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
     document.getElementById(panelId).classList.add('active');
 }
 
-async function generateDesign(){
-    const prompt=document.getElementById('designPrompt').value.trim();
-    if(!prompt){alert('Please describe your design first!');return;}
-    const style=document.getElementById('styleSelect').value;
-    const theme=document.getElementById('themeSelect').value;
-    const responsive=document.getElementById('responsiveSelect').value;
-    const btn=document.getElementById('generateBtn');
-    btn.disabled=true;btn.textContent='⏳ Generating...';
+async function generateDesign() {
+    const prompt = document.getElementById('designPrompt').value.trim();
+    if (!prompt) { alert('Please describe your design first!'); return; }
+    const style = document.getElementById('styleSelect').value;
+    const theme = document.getElementById('themeSelect').value;
+    const responsive = document.getElementById('responsiveSelect').value;
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true; btn.textContent = '⏳ Generating...';
     document.getElementById('generatingState').classList.add('show');
-    document.querySelectorAll('.result-panel').forEach(p=>p.classList.remove('active'));
-
-    const typePrompts={
-        html:`Generate a complete beautiful single-file HTML with embedded CSS for: ${prompt}. Style: ${style}. Theme: ${theme}. Responsive: ${responsive}. Return ONLY the complete HTML code.`,
-        js:`Generate clean JavaScript code for: ${prompt}. Return ONLY the JS code.`,
-        react:`Generate a React functional component for: ${prompt}. Style: ${style}. Return complete component code.`,
-        landing:`Generate a complete single-file landing page HTML with embedded CSS for: ${prompt}. Style: ${style}. Theme: ${theme}. Responsive: ${responsive}. Include navigation, hero, features, CTA, footer. Return ONLY the complete HTML code.`,
-        palette:`Generate 4 color palettes for: ${prompt}. Return ONLY a valid JSON array: [{"name":"Name","colors":[{"hex":"#xxx","name":"Color Name"}],"useCase":"description"}]`,
-        ui:`Give 5 UI/UX tips for: ${prompt}. Return ONLY a valid JSON array: [{"title":"Tip","description":"Details"}]`,
-        animation:`Generate a complete single-file HTML with stunning embedded CSS animations for: ${prompt}. Style: ${style}. Theme: ${theme}. Include CSS keyframe animations, smooth transitions, hover effects, loading animations, glowing effects, and motion UI. Make it visually impressive with smooth animations. Return ONLY the complete HTML code with all animations working perfectly.`
+    document.querySelectorAll('.result-panel').forEach(p => p.classList.remove('active'));
+    const typePrompts = {
+        html: `Generate a complete beautiful single-file HTML with embedded CSS for: ${prompt}. Style: ${style}. Theme: ${theme}. Responsive: ${responsive}. Return ONLY the complete HTML code.`,
+        js: `Generate clean JavaScript code for: ${prompt}. Return ONLY the JS code.`,
+        react: `Generate a React functional component for: ${prompt}. Style: ${style}. Return complete component code.`,
+        landing: `Generate a complete single-file landing page HTML for: ${prompt}. Style: ${style}. Theme: ${theme}. Responsive: ${responsive}. Include navigation, hero, features, CTA, footer. Return ONLY the complete HTML code.`,
+        palette: `Generate 4 color palettes for: ${prompt}. Return ONLY a valid JSON array: [{"name":"Name","colors":[{"hex":"#xxx","name":"Color Name"}],"useCase":"description"}]`,
+        ui: `Give 5 UI/UX tips for: ${prompt}. Return ONLY a valid JSON array: [{"title":"Tip","description":"Details"}]`,
+        animation: `Generate a complete single-file HTML with stunning CSS animations for: ${prompt}. Style: ${style}. Theme: ${theme}. Include CSS keyframe animations, glowing effects, motion UI. Return ONLY the complete HTML code.`
     };
-
-    try{
-        const response=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`message=${encodeURIComponent(typePrompts[selectedType])}&is_design=true`});
-        const data=await response.json();
-        const result=data.reply||'';
+    try {
+        const formData = new FormData();
+        formData.append('message', typePrompts[selectedType]);
+        formData.append('is_design', 'true');
+        formData.append('chat_id', currentChatId || '');
+        const response = await fetch('/chat', { method: 'POST', body: formData });
+        const data = await response.json();
+        const result = data.reply || '';
         document.getElementById('generatingState').classList.remove('show');
         document.getElementById('codePanel').classList.add('active');
         document.querySelectorAll('.result-tab')[0].classList.add('active');
-        if(selectedType==='palette'){showPalette(result);}
-        else if(selectedType==='ui'){showTips(result);}
-        else{showCode(result,selectedType);showPreview(result,selectedType);}
-    }catch(err){
+        if (selectedType === 'palette') { showPalette(result); }
+        else if (selectedType === 'ui') { showTips(result); }
+        else { showCode(result, selectedType); showPreview(result, selectedType); }
+    } catch (err) {
         document.getElementById('generatingState').classList.remove('show');
         document.getElementById('codePanel').classList.add('active');
         alert('Something went wrong. Please try again!');
     }
-    btn.disabled=false;btn.textContent='✨ Generate Design';
+    btn.disabled = false; btn.textContent = '✨ Generate Design';
 }
 
-function showCode(code,type){
-    const clean=code.replace(/```html|```css|```javascript|```jsx|```/g,'').trim();
-    document.getElementById('codeEmpty').style.display='none';
-    document.getElementById('codeResult').style.display='block';
-    document.getElementById('codeResult').innerHTML=`<div class="code-block"><div class="code-header"><span class="code-lang">${type.toUpperCase()}</span><button class="copy-btn" onclick="copyCode(this)">Copy Code</button></div><div class="code-content">${escapeHtml(clean)}</div></div>`;
+function showCode(code, type) {
+    const clean = code.replace(/```html|```css|```javascript|```jsx|```/g, '').trim();
+    document.getElementById('codeEmpty').style.display = 'none';
+    document.getElementById('codeResult').style.display = 'block';
+    document.getElementById('codeResult').innerHTML = `<div class="code-block"><div class="code-header"><span class="code-lang">${type.toUpperCase()}</span><button class="copy-btn" onclick="copyCode(this)">Copy Code</button></div><div class="code-content">${escapeHtml(clean)}</div></div>`;
 }
 
-function showPreview(code,type){
-    if(type==='js'||type==='react')return;
-    const clean=code.replace(/```html|```css|```/g,'').trim();
-    document.getElementById('previewEmpty').style.display='none';
-    const frame=document.getElementById('previewFrame');
-    frame.style.display='block';frame.srcdoc=clean;
+function showPreview(code, type) {
+    if (type === 'js' || type === 'react') return;
+    const clean = code.replace(/```html|```css|```/g, '').trim();
+    document.getElementById('previewEmpty').style.display = 'none';
+    const frame = document.getElementById('previewFrame');
+    frame.style.display = 'block'; frame.srcdoc = clean;
 }
 
-function showPalette(result){
-    try{
-        const clean=result.replace(/```json|```/g,'').trim();
-        const palettes=JSON.parse(clean);
-        document.getElementById('paletteEmpty').style.display='none';
-        document.getElementById('paletteResult').style.display='flex';
-        document.getElementById('paletteResult').innerHTML=palettes.map(p=>`<div class="palette-section"><h4>${p.name} — ${p.useCase}</h4><div class="color-swatches">${p.colors.map(c=>`<div class="swatch"><div class="swatch-color" style="background:${c.hex}" onclick="navigator.clipboard.writeText('${c.hex}')"></div><div class="swatch-label">${c.hex}</div><div class="swatch-label">${c.name}</div></div>`).join('')}</div></div>`).join('');
+function showPalette(result) {
+    try {
+        const clean = result.replace(/```json|```/g, '').trim();
+        const palettes = JSON.parse(clean);
+        document.getElementById('paletteEmpty').style.display = 'none';
+        document.getElementById('paletteResult').style.display = 'flex';
+        document.getElementById('paletteResult').innerHTML = palettes.map(p => `<div class="palette-section"><h4>${p.name} — ${p.useCase}</h4><div class="color-swatches">${p.colors.map(c => `<div class="swatch"><div class="swatch-color" style="background:${c.hex}" onclick="navigator.clipboard.writeText('${c.hex}')"></div><div class="swatch-label">${c.hex}</div><div class="swatch-label">${c.name}</div></div>`).join('')}</div></div>`).join('');
         document.querySelectorAll('.result-tab')[2].click();
-    }catch{showCode(result,'palette');}
+    } catch { showCode(result, 'palette'); }
 }
 
-function showTips(result){
-    try{
-        const clean=result.replace(/```json|```/g,'').trim();
-        const tips=JSON.parse(clean);
-        document.getElementById('tipsEmpty').style.display='none';
-        document.getElementById('tipsResult').style.display='flex';
-        document.getElementById('tipsResult').innerHTML=tips.map(t=>`<div class="suggestion-card"><h4>${t.title}</h4><p>${t.description}</p></div>`).join('');
+function showTips(result) {
+    try {
+        const clean = result.replace(/```json|```/g, '').trim();
+        const tips = JSON.parse(clean);
+        document.getElementById('tipsEmpty').style.display = 'none';
+        document.getElementById('tipsResult').style.display = 'flex';
+        document.getElementById('tipsResult').innerHTML = tips.map(t => `<div class="suggestion-card"><h4>${t.title}</h4><p>${t.description}</p></div>`).join('');
         document.querySelectorAll('.result-tab')[3].click();
-    }catch{showCode(result,'tips');}
+    } catch { showCode(result, 'tips'); }
 }
 
-function copyCode(btn){
-    const code=btn.closest('.code-block').querySelector('.code-content').textContent;
+function copyCode(btn) {
+    const code = btn.closest('.code-block').querySelector('.code-content').textContent;
     navigator.clipboard.writeText(code);
-    btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='Copy Code',2000);
+    btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = 'Copy Code', 2000);
 }
 
-function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escapeHtml(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-// ── Chat ──
-const chatArea=document.getElementById('chatArea');
-const input=document.getElementById('messageInput');
-const sendBtn=document.getElementById('sendBtn');
-const micBtn=document.getElementById('micBtn');
-const inputWrapper=document.getElementById('inputWrapper');
-const listeningOverlay=document.getElementById('listeningOverlay');
-const liveTranscript=document.getElementById('liveTranscript');
-const speakingIndicator=document.getElementById('speakingIndicator');
-let welcomeRemoved=false,isListening=false,recognition=null;
-const synth=window.speechSynthesis;
+// ── Chat Core ──
+const chatArea = document.getElementById('chatArea');
+const input = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const micBtn = document.getElementById('micBtn');
+const inputWrapper = document.getElementById('inputWrapper');
+const listeningOverlay = document.getElementById('listeningOverlay');
+const liveTranscript = document.getElementById('liveTranscript');
+const speakingIndicator = document.getElementById('speakingIndicator');
+let welcomeRemoved = false, isListening = false, recognition = null;
+const synth = window.speechSynthesis;
+let currentChatId = null;
+let currentMode = 'default';
+let selectedFile = null;
 
-function setupRecognition(){
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){alert('Please use Google Chrome for voice features!');return null;}
-    const rec=new SR();
-    rec.lang='';
-    rec.interimResults=true;
-    rec.continuous=false;
-    rec.maxAlternatives=1;
-    rec.onresult=e=>{
-        let interim='',final='';
-        for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}
-        liveTranscript.textContent=final||interim||'Listening...';
-        if(final){input.value=final;autoResize(input);}
+function setupRecognition() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Please use Google Chrome for voice features!'); return null; }
+    const rec = new SR();
+    rec.lang = ''; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+    rec.onresult = e => {
+        let interim = '', final = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) final += e.results[i][0].transcript;
+            else interim += e.results[i][0].transcript;
+        }
+        liveTranscript.textContent = final || interim || 'Listening...';
+        if (final) { input.value = final; autoResize(input); }
     };
-    rec.onend=()=>{isListening=false;micBtn.classList.remove('active');inputWrapper.classList.remove('listening');listeningOverlay.classList.remove('show');if(input.value.trim())sendMessage();};
-    rec.onerror=()=>{isListening=false;micBtn.classList.remove('active');inputWrapper.classList.remove('listening');listeningOverlay.classList.remove('show');};
+    rec.onend = () => {
+        isListening = false; micBtn.classList.remove('active');
+        inputWrapper.classList.remove('listening'); listeningOverlay.classList.remove('show');
+        if (input.value.trim()) sendMessage();
+    };
+    rec.onerror = () => {
+        isListening = false; micBtn.classList.remove('active');
+        inputWrapper.classList.remove('listening'); listeningOverlay.classList.remove('show');
+    };
     return rec;
 }
 
-function toggleVoice(){
-    if(isListening){stopListening();return;}
-    recognition=setupRecognition();if(!recognition)return;
-    isListening=true;micBtn.classList.add('active');inputWrapper.classList.add('listening');
-    listeningOverlay.classList.add('show');liveTranscript.textContent='Speak now in any language...';recognition.start();
+function toggleVoice() {
+    if (isListening) { stopListening(); return; }
+    recognition = setupRecognition(); if (!recognition) return;
+    isListening = true; micBtn.classList.add('active');
+    inputWrapper.classList.add('listening'); listeningOverlay.classList.add('show');
+    liveTranscript.textContent = 'Speak now in any language...'; recognition.start();
 }
 
-function stopListening(){
-    if(recognition)recognition.stop();
-    isListening=false;micBtn.classList.remove('active');inputWrapper.classList.remove('listening');listeningOverlay.classList.remove('show');
+function stopListening() {
+    if (recognition) recognition.stop();
+    isListening = false; micBtn.classList.remove('active');
+    inputWrapper.classList.remove('listening'); listeningOverlay.classList.remove('show');
 }
 
-function stopSpeaking(){if(synth)synth.cancel();speakingIndicator.classList.remove('show');}
+function stopSpeaking() { if (synth) synth.cancel(); speakingIndicator.classList.remove('show'); }
 
-function speakText(text){
-    if(!synth)return;synth.cancel();
-    const clean=text.replace(/[*#`]/g,'');
-    const utterance=new SpeechSynthesisUtterance(clean);
-    utterance.rate=0.95;utterance.pitch=1.2;utterance.volume=1.0;
-    const voices=synth.getVoices();
-    const preferred=voices.find(v=>v.name.includes('Google UK English Female'))||voices.find(v=>v.name.includes('Google US English'))||voices.find(v=>v.name.includes('Zira'))||voices.find(v=>v.name.includes('Female'))||voices[0];
-    if(preferred)utterance.voice=preferred;
-    utterance.onstart=()=>speakingIndicator.classList.add('show');
-    utterance.onend=()=>speakingIndicator.classList.remove('show');
-    utterance.onerror=()=>speakingIndicator.classList.remove('show');
+function speakText(text) {
+    if (!synth) return; synth.cancel();
+    const clean = text.replace(/[*#`]/g, '');
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.rate = 0.95; utterance.pitch = 1.2; utterance.volume = 1.0;
+    const voices = synth.getVoices();
+    const preferred = voices.find(v => v.name.includes('Google UK English Female')) || voices.find(v => v.name.includes('Google US English')) || voices[0];
+    if (preferred) utterance.voice = preferred;
+    utterance.onstart = () => speakingIndicator.classList.add('show');
+    utterance.onend = () => speakingIndicator.classList.remove('show');
+    utterance.onerror = () => speakingIndicator.classList.remove('show');
     synth.speak(utterance);
 }
 
-function fillInput(chip){input.value=chip.textContent.replace(/^[^\w]+/,'').trim();input.focus();autoResize(input);}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px';}
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function fillInput(chip) { input.value = chip.textContent.replace(/^[^\w]+/, '').trim(); input.focus(); autoResize(input); }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 
-function removeWelcome(){if(!welcomeRemoved){const ws=document.getElementById('welcomeScreen');if(ws)ws.remove();welcomeRemoved=true;}}
+function removeWelcome() {
+    if (!welcomeRemoved) {
+        const ws = document.getElementById('welcomeScreen');
+        if (ws) ws.remove();
+        welcomeRemoved = true;
+    }
+}
 
-function appendMessage(role,text){
+function appendMessage(role, text) {
     removeWelcome();
-    const isUser=role==='user';
-    const div=document.createElement('div');
-    div.className=`message ${isUser?'user':'ai'}`;
-    div.innerHTML=`<div class="avatar ${isUser?'user-av':'ai-av'}">${isUser?'You':'M•AI'}</div><div class="bubble"><div class="sender">${isUser?'You':'ManDot AI'}</div>${escapeHtml(text).replace(/\n/g,'<br>')}</div>`;
-    chatArea.appendChild(div);chatArea.scrollTop=chatArea.scrollHeight;
+    const isUser = role === 'user';
+    const div = document.createElement('div');
+    div.className = `message ${isUser ? 'user' : 'ai'}`;
+    div.innerHTML = `<div class="avatar ${isUser ? 'user-av' : 'ai-av'}">${isUser ? 'You' : 'M•AI'}</div><div class="bubble"><div class="sender">${isUser ? 'You' : 'ManDot AI'}</div>${escapeHtml(text).replace(/\n/g, '<br>')}</div>`;
+    chatArea.appendChild(div); chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-function appendTyping(){
+function appendTyping() {
     removeWelcome();
-    const div=document.createElement('div');div.className='message ai';div.id='typingIndicator';
-    div.innerHTML=`<div class="avatar ai-av">M•AI</div><div class="bubble"><div class="sender">ManDot AI</div><div class="typing-bubble"><span></span><span></span><span></span></div></div>`;
-    chatArea.appendChild(div);chatArea.scrollTop=chatArea.scrollHeight;
+    const div = document.createElement('div'); div.className = 'message ai'; div.id = 'typingIndicator';
+    div.innerHTML = `<div class="avatar ai-av">M•AI</div><div class="bubble"><div class="sender">ManDot AI</div><div class="typing-bubble"><span></span><span></span><span></span></div></div>`;
+    chatArea.appendChild(div); chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-function removeTyping(){const el=document.getElementById('typingIndicator');if(el)el.remove();}
+function removeTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
 
-async function sendMessage(){
-    const text=input.value.trim();if(!text)return;
-    input.value='';autoResize(input);sendBtn.disabled=true;
-    appendMessage('user',text);appendTyping();
-    try{
-        const response=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`message=${encodeURIComponent(text)}&is_design=false&chat_id=${currentChatId||''}`});
-        const data=await response.json();removeTyping();
-        const reply=data.reply||'No response.';
-        appendMessage('ai',reply);speakText(reply);
-    }catch(err){removeTyping();appendMessage('ai','Something went wrong. Please try again.');}
-    sendBtn.disabled=false;input.focus();
+async function sendMessage() {
+    const text = input.value.trim(); if (!text) return;
+    input.value = ''; autoResize(input); sendBtn.disabled = true;
+    appendMessage('user', text); appendTyping();
+    try {
+        const formData = new FormData();
+        formData.append('message', text);
+        formData.append('is_design', 'false');
+        formData.append('chat_id', currentChatId || '');
+        formData.append('mode', currentMode);
+        if (selectedFile) { formData.append('file', selectedFile); removeFile(); }
+        const response = await fetch('/chat', { method: 'POST', body: formData });
+        const data = await response.json(); removeTyping();
+        const reply = data.reply || 'No response.';
+        appendMessage('ai', reply); speakText(reply);
+    } catch (err) { removeTyping(); appendMessage('ai', 'Something went wrong. Please try again.'); }
+    sendBtn.disabled = false; input.focus();
 }
 
-// ── Chat History ──
-let currentChatId = null;
+// ── File Upload ──
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    selectedFile = file;
+    const icons = { 'image': '🖼️', 'pdf': '📕', 'docx': '📝', 'doc': '📝', 'txt': '📄' };
+    const ext = file.name.split('.').pop().toLowerCase();
+    const icon = file.type.startsWith('image/') ? '🖼️' : (icons[ext] || '📄');
+    document.getElementById('fileIcon').textContent = icon;
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('filePreview').classList.add('show');
+}
 
+function removeFile() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreview').classList.remove('show');
+}
+
+// ── Mode Menu ──
+document.getElementById('modeBtnTrigger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('modeMenu');
+    const histMenu = document.getElementById('historyMenu');
+    histMenu.classList.remove('show');
+    menu.classList.toggle('show');
+});
+
+document.querySelectorAll('.mode-item').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const mode = this.dataset.mode;
+        const icon = this.dataset.icon;
+        const name = this.dataset.name;
+        currentMode = mode;
+        document.getElementById('modeIcon').textContent = icon;
+        document.getElementById('modeName').textContent = name;
+        document.querySelectorAll('.mode-item').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('modeMenu').classList.remove('show');
+        removeWelcome();
+        const div = document.createElement('div');
+        div.style.cssText = 'text-align:center;padding:8px;';
+        div.innerHTML = `<span class="mode-badge">${icon} Switched to ${name} Mode</span>`;
+        chatArea.appendChild(div);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    });
+});
+
+// ── History Menu ──
+document.getElementById('historyBtnTrigger').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const menu = document.getElementById('historyMenu');
+    const modeMenu = document.getElementById('modeMenu');
+    modeMenu.classList.remove('show');
+    menu.classList.toggle('show');
+    if (menu.classList.contains('show')) loadHistoryList();
+});
+
+document.getElementById('newChatBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    newChat();
+});
+
+// Close menus when clicking outside
+document.addEventListener('click', function(e) {
+    if (!document.getElementById('historyDropdown').contains(e.target)) {
+        document.getElementById('historyMenu').classList.remove('show');
+    }
+    if (!document.getElementById('modeDropdown').contains(e.target)) {
+        document.getElementById('modeMenu').classList.remove('show');
+    }
+});
+
+// ── Chat History Functions ──
 async function newChat() {
-    const res = await fetch('/history/new', {method:'POST'});
-    const data = await res.json();
-    currentChatId = data.chat_id;
+    try {
+        const res = await fetch('/history/new', { method: 'POST' });
+        const data = await res.json();
+        currentChatId = data.chat_id;
+    } catch(e) {
+        currentChatId = 'local_' + Date.now();
+    }
     chatArea.innerHTML = '';
     welcomeRemoved = false;
     chatArea.innerHTML = `<div class="welcome" id="welcomeScreen">
@@ -625,74 +834,68 @@ async function newChat() {
 }
 
 async function loadHistoryList() {
-    const res = await fetch('/history');
-    const chats = await res.json();
-    const list = document.getElementById('historyList');
-    const count = document.getElementById('historyCount');
-    count.textContent = chats.length;
-    if(chats.length === 0){
-        list.innerHTML = '<div class="history-empty">No chats yet!</div>';
-        return;
+    try {
+        const res = await fetch('/history');
+        const chats = await res.json();
+        const list = document.getElementById('historyList');
+        const count = document.getElementById('historyCount');
+        count.textContent = chats.length;
+        if (chats.length === 0) { list.innerHTML = '<div class="history-empty">No chats yet!</div>'; return; }
+        list.innerHTML = chats.map(c => `
+            <div class="history-item" onclick="loadChat('${c.id}')">
+                <div class="history-item-title">${c.title}</div>
+                <div class="history-item-time">🕐 ${c.created}</div>
+                <div class="history-item-actions">
+                    <button class="history-action-btn" onclick="event.stopPropagation();renameChat('${c.id}')">✏️ Rename</button>
+                    <button class="history-action-btn del" onclick="event.stopPropagation();deleteChat('${c.id}')">🗑️ Delete</button>
+                </div>
+            </div>`).join('');
+    } catch(e) {
+        document.getElementById('historyList').innerHTML = '<div class="history-empty">Could not load history</div>';
     }
-    list.innerHTML = chats.map(c => `
-        <div class="history-item" onclick="loadChat('${c.id}')">
-            <div class="history-item-title">${c.title}</div>
-            <div class="history-item-time">🕐 ${c.created}</div>
-            <div class="history-item-actions">
-                <button class="history-action-btn" onclick="event.stopPropagation();renameChat('${c.id}')">✏️ Rename</button>
-                <button class="history-action-btn del" onclick="event.stopPropagation();deleteChat('${c.id}')">🗑️ Delete</button>
-            </div>
-        </div>`).join('');
 }
 
 async function loadChat(chatId) {
-    const res = await fetch(`/history/${chatId}`);
-    const chat = await res.json();
-    if(!chat.messages) return;
-    currentChatId = chatId;
-    chatArea.innerHTML = '';
-    welcomeRemoved = true;
-    chat.messages.forEach(m => {
-        const isUser = m.role === 'user';
-        const div = document.createElement('div');
-        div.className = `message ${isUser?'user':'ai'}`;
-        div.innerHTML = `<div class="avatar ${isUser?'user-av':'ai-av'}">${isUser?'You':'M•AI'}</div><div class="bubble"><div class="sender">${isUser?'You':'ManDot AI'} <span style="font-weight:300;opacity:0.5">${m.time}</span></div>${escapeHtml(m.text).replace(/\n/g,'<br>')}</div>`;
-        chatArea.appendChild(div);
-    });
-    chatArea.scrollTop = chatArea.scrollHeight;
-    document.getElementById('historyMenu').classList.remove('show');
+    try {
+        const res = await fetch(`/history/${chatId}`);
+        const chat = await res.json();
+        if (!chat.messages) return;
+        currentChatId = chatId;
+        chatArea.innerHTML = '';
+        welcomeRemoved = true;
+        chat.messages.forEach(m => {
+            const isUser = m.role === 'user';
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user' : 'ai'}`;
+            div.innerHTML = `<div class="avatar ${isUser ? 'user-av' : 'ai-av'}">${isUser ? 'You' : 'M•AI'}</div><div class="bubble"><div class="sender">${isUser ? 'You' : 'ManDot AI'} <span style="font-weight:300;opacity:0.5">${m.time || ''}</span></div>${escapeHtml(m.text).replace(/\n/g, '<br>')}</div>`;
+            chatArea.appendChild(div);
+        });
+        chatArea.scrollTop = chatArea.scrollHeight;
+        document.getElementById('historyMenu').classList.remove('show');
+    } catch(e) { console.error('Load chat error:', e); }
 }
 
 async function renameChat(chatId) {
     const newTitle = prompt('Enter new name:');
-    if(!newTitle) return;
-    await fetch(`/history/${chatId}/rename`, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:`title=${encodeURIComponent(newTitle)}`});
-    loadHistoryList();
+    if (!newTitle) return;
+    try {
+        await fetch(`/history/${chatId}/rename`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `title=${encodeURIComponent(newTitle)}` });
+        loadHistoryList();
+    } catch(e) { console.error(e); }
 }
 
 async function deleteChat(chatId) {
-    if(!confirm('Delete this chat?')) return;
-    await fetch(`/history/${chatId}/delete`, {method:'POST'});
-    if(currentChatId === chatId) newChat();
-    else loadHistoryList();
+    if (!confirm('Delete this chat?')) return;
+    try {
+        await fetch(`/history/${chatId}/delete`, { method: 'POST' });
+        if (currentChatId === chatId) newChat();
+        else loadHistoryList();
+    } catch(e) { console.error(e); }
 }
 
-function toggleHistory() {
-    const menu = document.getElementById('historyMenu');
-    menu.classList.toggle('show');
-    if(menu.classList.contains('show')) loadHistoryList();
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', e => {
-    if(!document.getElementById('historyDropdown').contains(e.target)){
-        document.getElementById('historyMenu').classList.remove('show');
-    }
-});
-
-// Start with new chat
+// ── Init ──
+if (synth) synth.onvoiceschanged = () => synth.getVoices();
 newChat();
-if(synth)synth.onvoiceschanged=()=>synth.getVoices();
 </script>
 </body>
 </html>
