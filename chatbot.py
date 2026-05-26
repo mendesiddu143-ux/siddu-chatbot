@@ -14,8 +14,8 @@ import io
 app = Flask(__name__)
 app.secret_key = "mandot_ai_secret_key_2024"
 
-client = Groq(api_key="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")
-
+import os
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 USERS_FILE = "users.json"
 HISTORY_FILE = "chat_history.json"
 UPLOAD_FOLDER = "uploads"
