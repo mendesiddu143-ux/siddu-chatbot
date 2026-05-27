@@ -4,4 +4,4 @@ gunicorn
 pymupdf
 python-docx
 pillow
-duckduckgo-search
+ddgs
