@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from groq import Groq
 import fitz
-from ddgs import DDGS
+from duckduckgo_search import DDGS
 from docx import Document
 from PIL import Image
 import io
