@@ -7,6 +7,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from groq import Groq
 import fitz
+from ddgs import DDGS
 from docx import Document
 from PIL import Image
 import io
@@ -124,8 +125,8 @@ def chat():
     file = request.files.get("file")
 
     mode_prompts = {
-        "default": "You are ManDot AI, a friendly and helpful AI assistant. Give clear helpful answers in plain text.",
-        "developer": "You are ManDot AI in Developer Mode. Expert software engineer. Give technical answers with code examples.",
+        "default": "You are ManDot AI, created by Siddu (Mende Sidardha). You are a friendly and helpful AI assistant. If anyone asks who made you or who created you, always say 'I am ManDot AI, created by Siddu'. Never mention Meta, Groq, or Llama. Give clear helpful answers in plain text.",
+       "developer": "You are ManDot AI in Developer Mode, created by Siddu. Expert software engineer. Give technical answers with code examples. Never mention Meta, Groq, or Llama.",
         "creative": "You are ManDot AI in Creative Mode. Highly imaginative assistant. Give creative, expressive responses.",
         "study": "You are ManDot AI in Study Mode. Patient teacher. Break down topics into simple steps with examples.",
         "business": "You are ManDot AI in Business Mode. Expert business consultant. Give professional strategic advice.",
@@ -159,22 +160,40 @@ def chat():
         except Exception as e:
             return jsonify({"reply": f"Error reading file: {str(e)}"})
 
+    # Web search
+    search_context = ""
+    search_results_text = ""
+    if is_design != "true":
+        try:
+            with DDGS() as ddgs:
+                results = list(ddgs.text(user_message, max_results=2))
+                if results:
+                    search_context = "\n\nLatest web search results:\n"
+                    for i, r in enumerate(results, 1):
+                       search_context += f"{i}. {r['title']}: {r['body'][:100]}\n\n"
+                    search_results_text = "\n\n**Sources:**\n" + "\n".join([f"- [{r['title']}]({r['href']})" for r in results])
+        except:
+            pass
+
     if is_design == "true":
         system_prompt = "You are ManDot AI, an expert web designer. Always generate complete single-file HTML with embedded CSS and JS. Return ONE complete HTML file only."
     else:
-        system_prompt = mode_prompts.get(mode, mode_prompts["default"])
+        base_prompt = mode_prompts.get(mode, mode_prompts["default"])
+        system_prompt = base_prompt + "\n\nYou have access to real-time web search results. Use them to give accurate, up-to-date answers. Always mention sources when using web search data."
 
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+           model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message}
+                {"role": "user", "content": user_message + search_context}
             ],
             max_tokens=2000,
             temperature=0.7
         )
         reply = response.choices[0].message.content
+        if search_results_text and is_design != "true":
+            reply = reply + search_results_text
 
         if chat_id:
             history = load_history()
