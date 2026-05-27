@@ -14,8 +14,8 @@ import io
 app = Flask(__name__)
 app.secret_key = "mandot_ai_secret_key_2024"
 
-import os
-client = Groq(api_key="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")
+client = Groq(api_key="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")
+
 USERS_FILE = "users.json"
 HISTORY_FILE = "chat_history.json"
 UPLOAD_FOLDER = "uploads"
@@ -125,14 +125,13 @@ def chat():
 
     mode_prompts = {
         "default": "You are ManDot AI, a friendly and helpful AI assistant. Give clear helpful answers in plain text.",
-        "developer": "You are ManDot AI in Developer Mode. You are an expert software engineer. Always give technical, precise answers with code examples. Use proper formatting for code. Focus on best practices, performance, and clean code.",
-        "creative": "You are ManDot AI in Creative Mode. You are a highly imaginative and artistic assistant. Give creative, expressive, colorful responses. Use metaphors, storytelling, and creative thinking. Think outside the box!",
-        "study": "You are ManDot AI in Study Assistant Mode. You are a patient and thorough teacher. Break down complex topics into simple steps. Use examples, analogies, and structured explanations. Encourage the student.",
-        "business": "You are ManDot AI in Business Advisor Mode. You are an expert business consultant. Give professional, strategic, data-driven advice. Focus on ROI, market analysis, growth strategies, and business best practices.",
-        "motivator": "You are ManDot AI in Motivator Mode. You are an energetic and inspiring life coach. Give powerful, uplifting, motivational responses. Use enthusiasm, positive energy, and encouragement. Help people believe in themselves!"
+        "developer": "You are ManDot AI in Developer Mode. Expert software engineer. Give technical answers with code examples.",
+        "creative": "You are ManDot AI in Creative Mode. Highly imaginative assistant. Give creative, expressive responses.",
+        "study": "You are ManDot AI in Study Mode. Patient teacher. Break down topics into simple steps with examples.",
+        "business": "You are ManDot AI in Business Mode. Expert business consultant. Give professional strategic advice.",
+        "motivator": "You are ManDot AI in Motivator Mode. Energetic life coach. Give powerful uplifting motivational responses."
     }
 
-    # Handle file upload
     if file and file.filename:
         filename = file.filename.lower()
         try:
@@ -140,29 +139,23 @@ def chat():
                 img_base64 = image_to_base64(file)
                 response = client.chat.completions.create(
                     model="meta-llama/llama-4-scout-17b-16e-instruct",
-                    messages=[
-                        {"role": "user", "content": [
-                            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_base64}"}},
-                            {"type": "text", "text": user_message if user_message else "Please analyze this image and describe what you see in detail."}
-                        ]}
-                    ],
+                    messages=[{"role": "user", "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_base64}"}},
+                        {"type": "text", "text": user_message if user_message else "Analyze this image in detail."}
+                    ]}],
                     max_tokens=1000
                 )
                 reply = response.choices[0].message.content
                 return jsonify({"reply": reply, "chat_id": chat_id})
-
             elif filename.endswith('.pdf'):
                 file_info = extract_text_from_pdf(file)
-                user_message = f"{user_message if user_message else 'Please analyze this PDF.'}\n\nContent:\n{file_info}"
-
+                user_message = f"{user_message if user_message else 'Analyze this PDF.'}\n\nContent:\n{file_info}"
             elif filename.endswith(('.docx', '.doc')):
                 file_info = extract_text_from_docx(file)
-                user_message = f"{user_message if user_message else 'Please analyze this document.'}\n\nContent:\n{file_info}"
-
+                user_message = f"{user_message if user_message else 'Analyze this document.'}\n\nContent:\n{file_info}"
             elif filename.endswith('.txt'):
                 file_info = file.read().decode('utf-8')[:3000]
-                user_message = f"{user_message if user_message else 'Please analyze this file.'}\n\nContent:\n{file_info}"
-
+                user_message = f"{user_message if user_message else 'Analyze this file.'}\n\nContent:\n{file_info}"
         except Exception as e:
             return jsonify({"reply": f"Error reading file: {str(e)}"})
 
@@ -172,43 +165,32 @@ def chat():
         system_prompt = mode_prompts.get(mode, mode_prompts["default"])
 
     try:
-        def generate():
-            full_reply = ""
-            stream = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_message}
-                ],
-                max_tokens=2000,
-                temperature=0.7,
-                stream=True
-            )
-            for chunk in stream:
-                if chunk.choices[0].delta.content:
-                    text = chunk.choices[0].delta.content
-                    full_reply += text
-                    yield f"data: {json.dumps({'text': text})}\n\n"
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=2000,
+            temperature=0.7
+        )
+        reply = response.choices[0].message.content
 
-            # Save to history after streaming
-            if chat_id:
-                history = load_history()
-                user_key = f"{user_email}_{chat_id}"
-                if user_key not in history:
-                    history[user_key] = {
-                        "id": chat_id, "user": user_email,
-                        "title": user_message[:40] + "..." if len(user_message) > 40 else user_message,
-                        "created": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                        "messages": []
-                    }
-                history[user_key]["messages"].append({"role": "user", "text": user_message[:200], "time": datetime.now().strftime("%H:%M")})
-                history[user_key]["messages"].append({"role": "ai", "text": full_reply, "time": datetime.now().strftime("%H:%M")})
-                save_history(history)
+        if chat_id:
+            history = load_history()
+            user_key = f"{user_email}_{chat_id}"
+            if user_key not in history:
+                history[user_key] = {
+                    "id": chat_id, "user": user_email,
+                    "title": user_message[:40] + "..." if len(user_message) > 40 else user_message,
+                    "created": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                    "messages": []
+                }
+            history[user_key]["messages"].append({"role": "user", "text": user_message[:200], "time": datetime.now().strftime("%H:%M")})
+            history[user_key]["messages"].append({"role": "ai", "text": reply, "time": datetime.now().strftime("%H:%M")})
+            save_history(history)
 
-            yield f"data: {json.dumps({'done': True, 'chat_id': chat_id})}\n\n"
-
-        from flask import Response
-        return Response(generate(), mimetype='text/event-stream')
+        return jsonify({"reply": reply, "chat_id": chat_id})
     except Exception as e:
         return jsonify({"reply": str(e)})
 
