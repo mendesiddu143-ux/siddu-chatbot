@@ -15,7 +15,7 @@ import io
 app = Flask(__name__)
 app.secret_key = "mandot_ai_secret_key_2024"
 
-client = Groq(api_key="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")
+client = Groq(api_key="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")
 
 USERS_FILE = "users.json"
 HISTORY_FILE = "chat_history.json"
